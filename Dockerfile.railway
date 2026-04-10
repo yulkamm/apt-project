@@ -1,10 +1,15 @@
-# Базовый образ PHP с Apache
 FROM php:8.2-apache
 
 # Установка расширений PHP
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Включение модулей Apache
+# Отключаем все MPM модули
+RUN a2dismod mpm_event mpm_worker
+
+# Включаем только mpm_prefork (нужен для PHP)
+RUN a2enmod mpm_prefork
+
+# Включаем другие необходимые модули
 RUN a2enmod rewrite headers
 
 # Копирование исходного кода
