@@ -1,0 +1,16 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.railway"
+
+[deploy]
+startCommand = "apache2-foreground"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "apt-web"
+port = 80
+
+[[services.database]]
+name = "apt-mysql"
+engine = "MYSQL"
