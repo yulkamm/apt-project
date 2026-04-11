@@ -1,17 +1,25 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm
 
-# Установка расширений PHP
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+# Установка Nginx и расширений PHP
+RUN apt-get update && \
+    apt-get install -y nginx && \
+    docker-php-ext-install mysqli pdo pdo_mysql && \
+    rm -rf /var/lib/apt/lists/*
 
-# Копирование всех файлов из корня
+# Копирование файлов проекта
 COPY . /var/www/html/
 
-# Настройка прав (ОДНА команда с &&)
-RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html
+# Настройка Nginx
+COPY nginx.conf /etc/nginx/sites-enabled/default
 
-# Порт для Railway
+# Настройка прав
+RUN chown -R www-www-data /var/www/html && \
+    chmod -R 755 /var/www/html && \
+    mkdir -p /run/php && \
+    chown www-www-data /run/php
+
+# Порт
 EXPOSE 80
 
-# Запуск Apache
-CMD ["apache2-foreground"]
+# Запуск PHP-FPM и Nginx
+CMD service php8.2-fpm start && nginx -g 'daemon off;'
