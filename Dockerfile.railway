@@ -12,14 +12,14 @@ COPY . /var/www/html/
 # Настройка Nginx
 COPY nginx.conf /etc/nginx/sites-enabled/default
 
-# Настройка прав (ИСПРАВЛЕНО: www-data:www-data)
-RUN chown -R www-data:www-data /var/www/html && \
+# Настройка прав
+RUN chown -R www-www-data /var/www/html && \
     chmod -R 755 /var/www/html && \
     mkdir -p /run/php && \
-    chown www-data:www-data /run/php
+    chown www-www-data /run/php
 
 # Порт
 EXPOSE 80
 
-# Запуск PHP-FPM и Nginx
-CMD service php8.2-fpm start && nginx -g 'daemon off;'
+# Запуск PHP-FPM напрямую и Nginx
+CMD php-fpm8.2 & nginx -g 'daemon off;'
